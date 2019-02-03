@@ -41,7 +41,8 @@ C’est l’équivalent d’une matrice [NumPy](https://web.archive.org/web/2018
 
 Cette manière de représenter les données oblige à changer quelque peu les habitudes de programmation. On travaille sur des colonnes, des lignes ou des cellules au lieu de parcourir l’ensemble des données avec des boucles et/ou des boucles imbriquées. Par exemple, pour modifier toutes les valeurs d'une colonne on utilisera [pandas.Series.map(fonction)](https://web.archive.org/web/20180831122249/http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.map.html).
 
-![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/pandas_col_ligne.png)
+
+<img src="https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/pandas_col_ligne.png" width="350">
 
 Pandas permet nativement:
 
@@ -75,7 +76,7 @@ Ouvrir et sauvegarder un fichier shapefile (ou autre) est enfantin et a été vu
 
 #### Le fichier shapefile d'origine
 
-<img src="https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/depart.png" width="350">
+<img src="https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/depart.png" width="150">
 
 
 #### Transformation en GeoDataFrame
