@@ -1,3 +1,19 @@
+# Python: GeoPandas ou le Pandas spatial
+
+dim 16\-10\-2016 [Martin Laloux](https://web.archive.org/web/20180831122249/http://portailsig.org/users/gene "Voir le profil utilisateur.")
+
+*   [SIG OpenSource](https://web.archive.org/web/20180831122249/http://portailsig.org/category/actudossier/sig-opensource)
+
+| ![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/icone/pythonlogo.jpg) |    
+| **Niveau** | Intermédiaire |      
+| **Logiciels utilisés** | 
+**[Python 2.7.x ou Python 3.x](https://web.archive.org/web/20180831122249/https://www.python.org/)**    
+**[Pandas (module Python)](https://web.archive.org/web/20180831122249/http://pandas.pydata.org/)**    
+**[GeoPandas (module Python)](https://web.archive.org/web/20180831122249/http://geopandas.org/)**   
+ |
+| **Plateforme** | Windows | Mac | Linux | FreeBSD |
+
+
 Dans le monde géomatique, il y a ceux qui préfèrent les boutons, les menus, les pointer\-cliquer, ou glisser\-déplacer, le tout dans une jolie interface graphique (les SIGs quoi) et ceux qui préfèrent autre chose, comme la programmation directe et moi, malheureusement ou heureusement, je suis tombé dedans quand j’étais petit...
 
 Parmi les nombreux modules Python existants, il y en a un qui me séduit de plus en plus, c’est [GeoPandas](https://web.archive.org/web/20180831122249/http://geopandas.org/) (vu sommairement dans [Python à finalité géospatiale: pourquoi débuter avec le module ogr alors qu’il existe des alternatives plus simples et plus didactiques ?](https://web.archive.org/web/20180831122249/http://www.portailsig.org/content/nouv)) de Kelsey Jordahl, car il permet de pratiquement tout faire (attributs, géométries, jointures, etc.). Comme son nom l’indique, il est intrinsèquement lié à [Pandas](https://web.archive.org/web/20180831122249/http://pandas.pydata.org/), mais force est de constater que la plupart des géomaticiens qui utilisent Python dans leurs logiciels [SIG](https://web.archive.org/web/20180831122249/http://portailsig.org/glossary/4/letters#term28) ne connaissent pas ce dernier module et pourtant...
