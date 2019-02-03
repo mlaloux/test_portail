@@ -28,7 +28,7 @@ Les exemples/tutoriels/videos sur [Pandas](https://web.archive.org/web/201808311
 
 <img src="pandas_logo.png" width="330">.
 
-<img src="pandasbase.png" width="340">.
+<img src="pandasbase.png" width="350">.
 
 Figure modifiée de [Cheat Sheet: The pandas DataFrame Object](https://web.archive.org/web/20180831122249/http://www.webpages.uidaho.edu/%7Estevel/504/Pandas%20DataFrame%20Notes.pdf) ( Dr. Stephen Sauchi Le)
 
@@ -56,11 +56,14 @@ Cette librairie n'est pas isolée, car un grand nombre de modules se sont dével
 
 ### GeoPandas
 
-![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/geopandas_0.png)
+<img src="https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/geopandas_0.png" width="330">.
+
 
 Figure réalisée avec GeoPandas (Delaunay, Voronoï) en s'inspirant de [Origami Panda Print](https://web.archive.org/web/20180831122249/https://www.etsy.com/listing/231278536/origami-panda-print-bear-print-origami)
 
-![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/geopandas.png)
+
+<img src="https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/geopandas.png" width="350">
+
 
 Le monde géospatial ne pouvait pas rester en reste d'où la création de [GeoPandas](https://web.archive.org/web/20180831122249/http://geopandas.org/) qui est une extension geospatiale de Pandas. Elle rajoute les GeoSeries (géométries, en bleu clair) et les GeoDataFrames ou DataFrames avec une colonne GeoSerie aux structures de Pandas ([GeoPandas: Data Structures](https://web.archive.org/web/20180831122249/http://geopandas.org/data_structures.html)). Le résultat final est une structure où tous les traitements de Pandas sont possibles sur les colonnes oranges (attributs, Panda Series) et les traitements géomatiques sur la colonne bleu clair (geospatial, Geopandas GeoSerie). En pratique une GeoSerie est constituée de géométries [Shapely. ](https://web.archive.org/web/20180831122249/http://toblerity.org/shapely/manual.html) Une ligne d'un GeoDataFrame contient donc les attributs et la géométrie d'un élément.
 
@@ -72,7 +75,8 @@ Ouvrir et sauvegarder un fichier shapefile (ou autre) est enfantin et a été vu
 
 #### Le fichier shapefile d'origine
 
-![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/depart.png)
+<img src="https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/depart.png" width="350">
+
 
 #### Transformation en GeoDataFrame
 
