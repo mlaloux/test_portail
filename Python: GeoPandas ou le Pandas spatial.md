@@ -2,11 +2,12 @@
 
 dim 16\-10\-2016 [Martin Laloux](https://web.archive.org/web/20180831122249/http://portailsig.org/users/gene "Voir le profil utilisateur.")
 
-*   [SIG OpenSource](https://web.archive.org/web/20180831122249/http://portailsig.org/category/actudossier/sig-opensource)
 
-| ![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/icone/pythonlogo.jpg) |    
-| **Niveau** | Intermédiaire |      
-| **Logiciels utilisés** | 
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/icone/pythonlogo.jpg) 
+
+**Niveau**   
+Intermédiaire      
+**Logiciels utilisés**       
 **[Python 2.7.x ou Python 3.x](https://web.archive.org/web/20180831122249/https://www.python.org/)**    
 **[Pandas (module Python)](https://web.archive.org/web/20180831122249/http://pandas.pydata.org/)**    
 **[GeoPandas (module Python)](https://web.archive.org/web/20180831122249/http://geopandas.org/)**   
