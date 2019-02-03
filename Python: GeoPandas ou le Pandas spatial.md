@@ -12,8 +12,8 @@ Intermédiaire
 **[Pandas (module Python)](https://web.archive.org/web/20180831122249/http://pandas.pydata.org/)**    
 **[GeoPandas (module Python)](https://web.archive.org/web/20180831122249/http://geopandas.org/)**   
  |
-| **Plateforme** | Windows | Mac | Linux | FreeBSD |
-
+**Plateforme** 
+Windows,Mac,Linux
 
 Dans le monde géomatique, il y a ceux qui préfèrent les boutons, les menus, les pointer\-cliquer, ou glisser\-déplacer, le tout dans une jolie interface graphique (les SIGs quoi) et ceux qui préfèrent autre chose, comme la programmation directe et moi, malheureusement ou heureusement, je suis tombé dedans quand j’étais petit...
 
@@ -26,8 +26,9 @@ Les exemples/tutoriels/videos sur [Pandas](https://web.archive.org/web/201808311
 ### Pandas
 
 
-<img src="pandas_logo.png" width="320">.
-<img src="pandasbase.png" width="300">.
+<img src="pandas_logo.png" width="330">.
+
+<img src="pandasbase.png" width="340">.
 
 Figure modifiée de [Cheat Sheet: The pandas DataFrame Object](https://web.archive.org/web/20180831122249/http://www.webpages.uidaho.edu/%7Estevel/504/Pandas%20DataFrame%20Notes.pdf) ( Dr. Stephen Sauchi Le)
 
