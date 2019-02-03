@@ -24,9 +24,9 @@ Les exemples/tutoriels/videos sur [Pandas](https://web.archive.org/web/201808311
 
 ### Pandas
 
-![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/pandas_logo.png)
 
-![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/pandasbase.png)
+<img src="pandas_logo.png" width="320">.
+<img src="pandasbase.png" width="300">.
 
 Figure modifiée de [Cheat Sheet: The pandas DataFrame Object](https://web.archive.org/web/20180831122249/http://www.webpages.uidaho.edu/%7Estevel/504/Pandas%20DataFrame%20Notes.pdf) ( Dr. Stephen Sauchi Le)
 
