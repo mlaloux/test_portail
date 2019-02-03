@@ -86,3 +86,214 @@ gdf[['Zn','Pb']].describe().transpose()
 ```
 
  ![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/stats1.png)
+ 
+ ```Python
+gdf[['Zn','Pb']].cov() # covariance
+```
+ ![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/stats2.png)
+
+À tout moment il y a la possibilité de sauver le GeoDataFrame résultant
+
+```Python
+gdf.to_file("resultat.shp")
+```
+
+Je vous laisse découvrir Pandas pour tous les traitements possibles (une multitude), car ce qui nous intéresse ici ce sont les traitements géomatiques.
+
+#### Quelques manipulations géométriques avec GeoPandas
+
+Je vais vous montrer ici comment convertir ce GeoDataFrame en 4 fichiers shapefiles tout en gardant les attributs en illustrant les manières de procéder (je repars du fichier original):
+
+*   la transformation de polygones en points se fera avec la fonction centroid de GeoPandas;
+*   la transformation de polygones en lignes se fera avec Shapely et la commande map de GeoPandas et les [fonctions lambda](https://web.archive.org/web/20180831122249/http://sametmax.com/fonctions-anonymes-en-python-ou-lambda/) puisque la commande native n'existe pas et qu'il est nécessaire d'appliquer la fonction à chaque élément de la GeoSerie;
+*   la transformation de lignes en points se fera de la même manière, mais le résultat aura évidemment plus de lignes.
+
+Je vais sans doute être un peu long pour certains, mais il faut bien comprendre ici les manipulations géométriques sous peine d’être perdu dans la suite.
+
+*   Transformation du GeoDataFrame en fichier shapefile de type point
+
+```Python
+# copie du GeoDataFrame original
+points = gdf.copy()
+points.geometry = points['geometry'].centroid
+ # même crs que l'original
+points.crs = gdf.crs
+# sauvetage du fichier shapefile
+points.to_file('centroid_portail.shp')
+points.head()
+```
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/geom_points.png)
+
+*   Transformation du GeoDataFrame en shapefile de type polylignes. Ici il est nécessaire d'utiliser une fonction extérieure puis d'utiliser la fonction map
+```Python
+from shapely.geometry import LineString
+# la fonction de transformation de polygones en polylignes
+linear = gdf.copy()
+def convert(geom):
+    return LineString(list(geom.exterior.coords))
+# application de la fonction à toutes les lignes de la colonne geometry
+linear.geometry= linear.geometry.map(convert, linear['geometry'])
+# ou directement avec les fonctions lambdas
+linear.geometry= linear.geometry.map(lambda x: LineString(list(x.exterior.coords)))
+linear.crs = gdf.crs
+linear.head()
+```
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/geom_line.png)
+
+*   Extraction des noeuds des polylignes: ici il faut extraire les noeuds des lignes (LineString) de linear et créer un nouveau GeoDataFrame
+
+```Python
+col = linear.columns.tolist()[0:4]
+print col
+[u'POLY_NUM_B', u'Pb', u'Zn', 'geometry']
+# création d'un nouveau GeoDataFrame avec ces colonnes
+noeuds = gpd.GeoDataFrame(columns=col)
+# extraction des noeuds à partir des lignes présentes dans linear et des valeurs d'attributs et intégration dans le nouveau GeoDataFrame
+for index, row in linear.iterrows():
+for j in list(row['geometry'].coords):
+        noeuds = noeuds.append({'POLY_NUM_B': int(row['POLY_NUM_B']), 'Pb':row['Pb'],'Zn':row['Zn'], 'geometry':Point(j) },ignore_index=True)
+noeuds.crs = {'init' :'epsg:31370'} # autre manière de spécifier les coordonnées
+```
+
+Comme je veux être sûr que mes valeurs soient de type entier, je le spécifie:
+
+```Python
+noeuds['POLY_NUM_B'] = noeuds['POLY_NUM_B'].astype('int')
+noeuds['Pb'] = noeuds['Pb'].astype('int')
+noeuds['Zn'] = noeuds['Zn'].astype('int')
+# affichage des éléments 8 à 16
+noeuds[8:16]
+```
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/point_sur_ligne.png)
+
+*   je crée maintenant un buffer autour de ces points
+```Python
+buffer = df.copy()
+buffer.geometry = buffer['geometry'].buffer(5)
+etc.
+```
+
+*   Résultat
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/restot.png)
+
+### En pratique
+
+1) Une des plus belles illustrations de la puissance de GeoPandas m'a été apportée suite à une de mes réponses sur [GIS Stack Exchange](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/). La question posée était "More Efficient Spatial join in Python without QGIS, ArcGIS, PostGIS, etc". J'ai répondu avec une solution classique de boucles imbriquées en parcourant les 2 fichiers shapefiles ([ma réponse](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/a/103066)) à comparer avec [la réponse avec GeoPandas](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/a/165413) qui illustre les jointures spatiales ([GeoPandas: spatial joins](https://web.archive.org/web/20180831122249/https://github.com/geopandas/geopandas/blob/master/examples/spatial_joins.ipynb))
+
+```Python
+points = geopandas.GeoDataFrame.from_file('points.shp') # or geojson etc
+polys = geopandas.GeoDataFrame.from_file('polys.shp')
+pointInPoly = gpd.sjoin(points, polys, how='left',op='within')
+```
+
+Et vous obtiendrez un GeoDataFrame avec tous les points de 'points.shp' qui sont dans les polygones de 'polys.shp'.
+
+2) Transformer un fichier csv ou Excel en GeoDataFrame est très facile:
+
+```Python
+import pandas as pd
+# transformation du fichier csv en Pandas DataFrame
+points = pd.read_csv("strati.csv")
+#transformation en GeoDataFrame
+from shapely.geometry import Point
+geometrie = [Point(xy) for xy in zip(points.x, points.y)] # colonnes du DataFrame résultants
+points = gpd.GeoDataFrame(points,geometry=geometrie)
+# ou directement
+points = pd.read_csv("strati.csv")
+points['geometry'] = points.apply(lambda p: Point(p.x, p.y), axis=1)
+```
+
+3) fusionner 2 ou plusieurs shapefiles, quelque soit le nombre et le type de champs, pourvu que le type de géométrie soit le même:
+```Python
+a = gpd.GeoDataFrame.from_file("shape1.shp")
+b = gpd.GeoDataFrame.from_file("shape2.shp")
+import pandas as pd
+result = pd.concat([a,b],axis=0)
+result.to_file("merged.shp")
+```
+
+4) un cas pratique auquel j'ai été confronté. J'ai un fichier shapefile reprenant les affleurements géologiques d'une carte (lignes) et un fichier csv avec leurs descriptions et je voudrai extraire les valeurs de schistosité de chacun d'entre eux pour créer un nouveau fichier shapefile de type point:
+```Python
+import geopandas as gpd
+import pandas as pd
+import re
+affl = gpd.GeoDataFrame.from_file("aff.shp")
+affl.head(2)
+```
+
+ ![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/affl1.png)
+
+Traitement du fichier csv
+```Python
+affleurs = "schisto.csv"
+# je choisis les colonnes que je veux importer
+u_cols = ['IDENT','desc']
+affleurs = pd.read_csv(aff, sep='\t', names=u_cols)
+regex = re.compile("S1.\d{1,2}\W*\d{1,3}")
+# je saute la partie du script pour chercher le regex et le résultat est
+affleurs.head(2) # les 2 premiers éléments
+```
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/affl2.png)
+
+Je joins les 2 DataFrames sur base du champ 'IDENT' et je modifie la géométrie
+```Python
+df2 = gpd.GeoDataFrame( pd.merge(affl, affleurs, on='IDENT'))
+df2['geometry'] = df2['geometry'].representative_point()
+df2.head(2)
+```
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/affl4.png)
+
+Résultat:
+
+![](https://web.archive.org/web/20180831122249im_/http://www.portailsig.org/sites/default/files/images/illustration/geopandas/resultat.png)
+
+4) Pour le reste je vous renvoie (le choix n'est pas exhaustif):
+
+\- aux exemples de Geopandas (notebooks Jupyter/IPython):
+
+*   [Prototyping choropleth classification schemes from PySAL for use with GeoPandas](https://web.archive.org/web/20180831122249/https://github.com/geopandas/geopandas/blob/master/examples/choropleths.ipynb)
+*   [GeoPandas: Overlays](https://web.archive.org/web/20180831122249/https://github.com/geopandas/geopandas/blob/master/examples/overlays.ipynb>)
+*   [GeoPandas: Spatial Joins](https://web.archive.org/web/20180831122249/https://github.com/geopandas/geopandas/blob/master/examples/spatial_joins.ipynb)
+
+\- à mes réponses ou à celles d'autres personnes sur [GIS Stack Exchange](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/) ou [Stack Overflow](https://web.archive.org/web/20180831122249/http://stackoverflow.com/):
+
+*   [Finding if point exists in shapefile using shapely performance?](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/questions/210942/finding-if-point-exists-in-shapefile-using-shapely-performance/210999#210999)
+*   [Check if a point falls within a multipolygon with Python](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/questions/208546/check-if-a-point-falls-within-a-multipolygon-with-python/208574#208574)
+*   [Merging overlapping features using Geopandas?](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/questions/202958/merging-overlapping-features-using-geopandas/203044#203044)
+*   [How to convert multiple csv files to shp using python and no arcpy?](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/questions/197825/how-to-convert-multiple-csv-files-to-shp-using-python-and-no-arcpy/197863#197863)
+*   [Turn a GeoDataFrame of x,y coordinates into Linestrings using GROUPBY?](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/a/202274)
+*   [How to check what changed inside the updated shapefile?](https://web.archive.org/web/20180831122249/http://gis.stackexchange.com/a/212336)
+*   [How to create a Feature Collection from a GeoJSON](https://web.archive.org/web/20180831122249/http://stackoverflow.com/a/37854687)
+*   [Write GeoDataFrame into SQL Database](https://web.archive.org/web/20180831122249/http://stackoverflow.com/a/38363154)
+
+\- à des exemples de combinaisons avec d'autres librairies:
+
+*   [Mapping in Python with geopandas](https://web.archive.org/web/20180831122249/http://darribas.org/gds15/content/labs/lab_03.html) (notebook Jupyter/IPython)
+*   [Basic Interactive Geospatial Analysis in Python](https://web.archive.org/web/20180831122249/http://blog.yhat.com/posts/interactive-geospatial-analysis.html)
+*   [Geodata manipulation with GeoPandas: Third in a series on scikit\-learn and GeoPandas](https://web.archive.org/web/20180831122249/https://michelleful.github.io/code-blog/2015/04/29/geopandas-manipulation/)
+*   [Prepare data for clustering lab](https://web.archive.org/web/20180831122249/http://darribas.org/gds15/content/labs/lab_08_airbnb_data_prep.html) (notebook Jupyter/IPython)
+*   [Clustering, spatial clustering, and geodemographics](https://web.archive.org/web/20180831122249/http://darribas.org/gds15/content/labs/lab_08.html) (notebook Jupyter/IPython)
+*   [Programming a seismic program](https://web.archive.org/web/20180831122249/https://github.com/agile-geoscience/notebooks/blob/master/Programming_a_seismic_program.ipynb) (notebook Jupyter/IPython)
+
+### Conclusions
+
+Contrairement à la plupart des tutoriels, je n'ai pas développé ici les fonctionnalités graphiques de la librairie puisque j'utilise un logiciel [SIG](https://web.archive.org/web/20180831122249/http://portailsig.org/glossary/4/letters#term28) pour visualiser les résultats. GeoPandas est encore jeune, mais ses possibilités sont déjà énormes, si vous aimez programmer, bien entendu. Dans mon cas, les traitements sont beaucoup plus rapides qu'avec QGIS pour ce que je veux faire (je ne dois pas utiliser PyQGIS, PyGRASS et leurs contraintes pour travailler sur des fichiers shapefiles. Tant que la colonne *geometry* d'un GeoDataFrame demeure inchangée, il y a moyen de faire ce que l'on veut avec les attributs).
+
+Du fait que la librairie utilise Fiona, elle est sujette aux mêmes restrictions (pas d'accès direct aux bases de données spatiales par exemple), mais il est possible de contourner cet aspect avec d'autres modules plus adéquats. De part sa jeunesse elle est encore sujette à des erreurs non rédhibitoires (voir [GeoPandas commits](https://web.archive.org/web/20180831122249/https://github.com/geopandas/geopandas/commits/master)).
+
+Signalons aussi [OSMnx](https://web.archive.org/web/20180831122249/https://github.com/gboeing/osmnx), pour le traitement des couches OpenStreetMap avec Pandas et  [GeoRasters](https://web.archive.org/web/20180831122249/https://github.com/ozak/georasters) qui se veut l'équivalent de GeoPandas pour les rasters.
+
+Tous les traitements présentés ont été effectués sur Mac OS X, Linux ou Windows avec les versions 0.1.x, 0.2.0 et 0.2.1 de GeoPandas et les versions 0.18.x puis 0.19.0 de Pandas.
+
+![](https://web.archive.org/web/20180831122249im_/http://portailsig.org/sites/default/files/images/drapeau/flag_great_britain.gif) **Site officiel :** [Using geopandas on Windows](https://web.archive.org/web/20180831122249/http://geoffboeing.com/2014/09/using-geopandas-windows/)    
+![](https://web.archive.org/web/20180831122249im_/http://portailsig.org/sites/default/files/images/drapeau/flag_great_britain.gif) **Site officiel :** [Pandas DataFrame Notes (PDF)](https://web.archive.org/web/20180831122249/http://www.webpages.uidaho.edu/~stevel/504/Pandas%20DataFrame%20Notes.pdf)   
+![](https://web.archive.org/web/20180831122249im_/http://portailsig.org/sites/default/files/images/drapeau/flag_france.gif) **Site officiel :** [DataFrame et Matrice](https://web.archive.org/web/20180831122249/http://www.xavierdupre.fr/app/ensae_teaching_cs/helpsphinx/notebooks/td1a_cenonce_session_10.html)   
+![](https://web.archive.org/web/20180831122249im_/http://portailsig.org/sites/default/files/images/drapeau/flag_france.gif) **Site officiel :** [DataFrame et Graphes](https://web.archive.org/web/20180831122249/http://www.xavierdupre.fr/app/ensae_teaching_cs/helpsphinx/notebooks/td2a_cenonce_session_1.html)   
+![](https://web.archive.org/web/20180831122249im_/http://portailsig.org/sites/default/files/images/drapeau/flag_france.gif) **Site officiel :** [Le pandas c’est bon, mangez en](https://web.archive.org/web/20180831122249/http://sametmax.com/le-pandas-cest-bon-mangez-en/)   
+![](https://web.archive.org/web/20180831122249im_/http://portailsig.org/sites/default/files/images/drapeau/flag_france.gif) **Site officiel :** [Introduction à Pandas](https://web.archive.org/web/20180831122249/http://www.python-simple.com/python-pandas/panda-intro.php)    
